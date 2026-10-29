@@ -25,7 +25,6 @@
 									"    pm.expect(jsonData).to.not.have.lengthOf(0);",
 									"});",
 									"",
-									"postman.setNextRequest(\"Ping\");",
 									""
 								],
 								"type": "text/javascript"
@@ -218,65 +217,6 @@
 								{
 									"key": "lastname",
 									"value": "{{lastname}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Search By Checkin",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"",
-									"var jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Response is not empty\", function () {",
-									"    pm.expect(jsonData).to.not.have.lengthOf(0);",
-									"});",
-									"",
-									"// use lodash map to get a flat array of all the returned booking ids",
-									"// https://lodash.com/docs/4.17.11#map",
-									"var booking_ids = _.map(jsonData, 'bookingid');",
-									"console.log(booking_ids);",
-									"",
-									"// the id for our newly created object should be there",
-									"pm.test(\"Expected booking id is in the returned array\", function () {",
-									"    pm.expect(booking_ids).to.include(pm.variables.get(\"booking_id\"));",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{rb_url}}/booking?checkin={{checkin}}",
-							"host": [
-								"{{rb_url}}"
-							],
-							"path": [
-								"booking"
-							],
-							"query": [
-								{
-									"key": "checkin",
-									"value": "{{checkin}}"
 								}
 							]
 						}
@@ -826,100 +766,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Update Invalid Date",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"// create the base booking",
-									"const createBooking = {",
-									"  url: pm.environment.get(\"rb_url\") + \"/booking\",",
-									"  method: 'POST',",
-									"  header: 'Content-Type:application/json',",
-									"  body: {",
-									"    mode: 'raw',",
-									"    raw: JSON.stringify(pm.variables.get(\"new_booking\"))",
-									"  }",
-									"};",
-									"pm.sendRequest(createBooking, function (err, res) {",
-									"    pm.expect(err).is.null;",
-									"    pm.variables.set(\"booking_id\", res.json().bookingid)",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Update fails\", function () {",
-									"    pm.response.to.not.have.success;",
-									"});",
-									"",
-									"pm.sendRequest(pm.environment.get(\"rb_url\") + \"/booking/\" + pm.variables.get(\"booking_id\"), function (err, res) {",
-									"  if (err) { console.log(err); }",
-									"  pm.test('Booking is unchanged', function () {",
-									"    pm.expect(err).to.equal(null);",
-									"    pm.expect(res.text()).to.include(pm.variables.get(\"firstname\"));",
-									"  });",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "password123",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "admin",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Cookie",
-								"value": "token=abc123"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"firstname\" : \"{{firstname}}\",\n    \"lastname\" : \"{{lastname}}\",\n    \"totalprice\" : {{totalprice}},\n    \"depositpaid\" : {{depositpaid}},\n    \"bookingdates\" : {\n        \"checkin\" : \"2019-12-32\",\n        \"checkout\" : \"{{checkout}}\"\n    },\n    \"additionalneeds\" : \"{{additionalneeds}}\"\n}"
-						},
-						"url": {
-							"raw": "{{rb_url}}/booking/{{booking_id}}",
-							"host": [
-								"{{rb_url}}"
-							],
-							"path": [
-								"booking",
-								"{{booking_id}}"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -1024,99 +870,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Invalid Patch",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"// create the base booking",
-									"const createBooking = {",
-									"  url: pm.environment.get(\"rb_url\") + \"/booking\",",
-									"  method: 'POST',",
-									"  header: 'Content-Type:application/json',",
-									"  body: {",
-									"    mode: 'raw',",
-									"    raw: JSON.stringify(pm.variables.get(\"new_booking\"))",
-									"  }",
-									"};",
-									"pm.sendRequest(createBooking, function (err, res) {",
-									"    pm.expect(err).is.null;",
-									"    pm.variables.set(\"booking_id\", res.json().bookingid)",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Patch fails\", function () {",
-									"    pm.response.to.not.have.success;",
-									"});",
-									"",
-									"pm.sendRequest(pm.environment.get(\"rb_url\") + \"/booking/\" + pm.variables.get(\"booking_id\"), function (err, res) {",
-									"  if (err) { console.log(err); }",
-									"  pm.test('Booking is unchanged', function () {",
-									"    pm.expect(err).to.equal(null);",
-									"    pm.expect(res.text()).to.include(pm.variables.get(\"firstname\"));",
-									"  });",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "password123",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "admin",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Cookie",
-								"value": "token=abc123"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"firstname\" : null,\n    \"lastname\" : \"{{lastname}}\"\n}"
-						},
-						"url": {
-							"raw": "{{rb_url}}/booking/{{booking_id}}",
-							"host": [
-								"{{rb_url}}"
-							],
-							"path": [
-								"booking",
-								"{{booking_id}}"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -1130,8 +883,7 @@
 							"pm.test(\"Ping is successful\", function () {",
 							"    pm.response.to.be.success;",
 							"});",
-							"",
-							"postman.setNextRequest(null);"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -1265,90 +1017,385 @@
 			]
 		},
 		{
-			"name": "Delete Booking",
-			"event": [
+			"name": "Known Defects",
+			"description": "Tests that assert correct API behaviour and currently fail against Restful Booker. CI runs them in a non-blocking step so the defects stay visible.",
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// create the base booking",
-							"const createBooking = {",
-							"  url: pm.environment.get(\"rb_url\") + \"/booking\",",
-							"  method: 'POST',",
-							"  header: 'Content-Type:application/json',",
-							"  body: {",
-							"    mode: 'raw',",
-							"    raw: JSON.stringify(pm.variables.get(\"new_booking\"))",
-							"  }",
-							"};",
-							"pm.sendRequest(createBooking, function (err, res) {",
-							"    pm.expect(err).is.null;",
-							"    pm.variables.set(\"booking_id\", res.json().bookingid)",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"",
-							"pm.sendRequest(pm.environment.get(\"rb_url\") + \"/booking/\" + pm.variables.get(\"booking_id\"), function (err, res) {",
-							"  if (err) { console.log(err); }",
-							"  pm.test('Booking no longer exists', function () {",
-							"    pm.expect(err).to.equal(null);",
-							"    pm.expect(res.code).to.eql(404);",
-							"  });",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
+					"name": "Search By Checkin",
+					"event": [
 						{
-							"key": "password",
-							"value": "password123",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"",
+									"const createBooking = {",
+									"  url: pm.environment.get(\"rb_url\") + \"/booking\",",
+									"  method: 'POST',",
+									"  header: 'Content-Type:application/json',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify(pm.variables.get(\"new_booking\"))",
+									"  }",
+									"};",
+									"pm.sendRequest(createBooking, function (err, res) {",
+									"    pm.expect(err).is.null;",
+									"    pm.variables.set(\"booking_id\", res.json().bookingid)",
+									"});"
+								]
+							}
 						},
 						{
-							"key": "username",
-							"value": "admin",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"if(jsonData.length > 0){",
+									"    pm.test(\"Responses are booking ids\", function() {",
+									"        // lodash forEach will iterate through each object ",
+									"        // in the array and apply the given function",
+									"        // https://lodash.com/docs/4.17.11#forEach",
+									"        _.forEach(jsonData, function(booking) {",
+									"            pm.expect(booking).to.have.property(\"bookingid\")",
+									"        })",
+									"    })",
+									"}",
+									"",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Response is not empty\", function () {",
+									"    pm.expect(jsonData).to.not.have.lengthOf(0);",
+									"});",
+									"",
+									"// use lodash map to get a flat array of all the returned booking ids",
+									"// https://lodash.com/docs/4.17.11#map",
+									"var booking_ids = _.map(jsonData, 'bookingid');",
+									"console.log(booking_ids);",
+									"",
+									"// the id for our newly created object should be there",
+									"pm.test(\"Expected booking id is in the returned array\", function () {",
+									"    pm.expect(booking_ids).to.include(pm.variables.get(\"booking_id\"));",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
-					]
-				},
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					},
-					{
-						"key": "Cookie",
-						"value": "token=abc123"
-					}
-				],
-				"url": {
-					"raw": "{{rb_url}}/booking/{{booking_id}}",
-					"host": [
-						"{{rb_url}}"
 					],
-					"path": [
-						"booking",
-						"{{booking_id}}"
-					]
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{rb_url}}/booking?checkin={{checkin}}",
+							"host": [
+								"{{rb_url}}"
+							],
+							"path": [
+								"booking"
+							],
+							"query": [
+								{
+									"key": "checkin",
+									"value": "{{checkin}}"
+								}
+							]
+						}
+					},
+					"response": [],
+					"description": "Known defect: Search by checkin date omits bookings that check in on that date"
+				},
+				{
+					"name": "Update Invalid Date",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// create the base booking",
+									"const createBooking = {",
+									"  url: pm.environment.get(\"rb_url\") + \"/booking\",",
+									"  method: 'POST',",
+									"  header: 'Content-Type:application/json',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify(pm.variables.get(\"new_booking\"))",
+									"  }",
+									"};",
+									"pm.sendRequest(createBooking, function (err, res) {",
+									"    pm.expect(err).is.null;",
+									"    pm.variables.set(\"booking_id\", res.json().bookingid)",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Update fails\", function () {",
+									"    pm.response.to.not.have.success;",
+									"});",
+									"",
+									"pm.sendRequest(pm.environment.get(\"rb_url\") + \"/booking/\" + pm.variables.get(\"booking_id\"), function (err, res) {",
+									"  if (err) { console.log(err); }",
+									"  pm.test('Booking is unchanged', function () {",
+									"    pm.expect(err).to.equal(null);",
+									"    pm.expect(res.text()).to.include(pm.variables.get(\"firstname\"));",
+									"  });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "token=abc123"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstname\" : \"{{firstname}}\",\n    \"lastname\" : \"{{lastname}}\",\n    \"totalprice\" : {{totalprice}},\n    \"depositpaid\" : {{depositpaid}},\n    \"bookingdates\" : {\n        \"checkin\" : \"2019-12-32\",\n        \"checkout\" : \"{{checkout}}\"\n    },\n    \"additionalneeds\" : \"{{additionalneeds}}\"\n}"
+						},
+						"url": {
+							"raw": "{{rb_url}}/booking/{{booking_id}}",
+							"host": [
+								"{{rb_url}}"
+							],
+							"path": [
+								"booking",
+								"{{booking_id}}"
+							]
+						}
+					},
+					"response": [],
+					"description": "Known defect: PUT accepts an invalid checkin/checkout date"
+				},
+				{
+					"name": "Invalid Patch",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// create the base booking",
+									"const createBooking = {",
+									"  url: pm.environment.get(\"rb_url\") + \"/booking\",",
+									"  method: 'POST',",
+									"  header: 'Content-Type:application/json',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify(pm.variables.get(\"new_booking\"))",
+									"  }",
+									"};",
+									"pm.sendRequest(createBooking, function (err, res) {",
+									"    pm.expect(err).is.null;",
+									"    pm.variables.set(\"booking_id\", res.json().bookingid)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Patch fails\", function () {",
+									"    pm.response.to.not.have.success;",
+									"});",
+									"",
+									"pm.sendRequest(pm.environment.get(\"rb_url\") + \"/booking/\" + pm.variables.get(\"booking_id\"), function (err, res) {",
+									"  if (err) { console.log(err); }",
+									"  pm.test('Booking is unchanged', function () {",
+									"    pm.expect(err).to.equal(null);",
+									"    pm.expect(res.text()).to.include(pm.variables.get(\"firstname\"));",
+									"  });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "token=abc123"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstname\" : null,\n    \"lastname\" : \"{{lastname}}\"\n}"
+						},
+						"url": {
+							"raw": "{{rb_url}}/booking/{{booking_id}}",
+							"host": [
+								"{{rb_url}}"
+							],
+							"path": [
+								"booking",
+								"{{booking_id}}"
+							]
+						}
+					},
+					"response": [],
+					"description": "Known defect: PATCH accepts an invalid body and nulls firstname"
+				},
+				{
+					"name": "Delete Booking",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// create the base booking",
+									"const createBooking = {",
+									"  url: pm.environment.get(\"rb_url\") + \"/booking\",",
+									"  method: 'POST',",
+									"  header: 'Content-Type:application/json',",
+									"  body: {",
+									"    mode: 'raw',",
+									"    raw: JSON.stringify(pm.variables.get(\"new_booking\"))",
+									"  }",
+									"};",
+									"pm.sendRequest(createBooking, function (err, res) {",
+									"    pm.expect(err).is.null;",
+									"    pm.variables.set(\"booking_id\", res.json().bookingid)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.sendRequest(pm.environment.get(\"rb_url\") + \"/booking/\" + pm.variables.get(\"booking_id\"), function (err, res) {",
+									"  if (err) { console.log(err); }",
+									"  pm.test('Booking no longer exists', function () {",
+									"    pm.expect(err).to.equal(null);",
+									"    pm.expect(res.code).to.eql(404);",
+									"  });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "token=abc123"
+							}
+						],
+						"url": {
+							"raw": "{{rb_url}}/booking/{{booking_id}}",
+							"host": [
+								"{{rb_url}}"
+							],
+							"path": [
+								"booking",
+								"{{booking_id}}"
+							]
+						}
+					},
+					"response": [],
+					"description": "Known defect: DELETE returns 201 Created instead of 200 OK"
 				}
-			},
-			"response": []
+			]
 		}
 	],
 	"event": [
