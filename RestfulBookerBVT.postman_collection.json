@@ -631,12 +631,12 @@
 							"basic": [
 								{
 									"key": "password",
-									"value": "password123",
+									"value": "{{rb_password}}",
 									"type": "string"
 								},
 								{
 									"key": "username",
-									"value": "admin",
+									"value": "{{rb_username}}",
 									"type": "string"
 								}
 							]
@@ -650,10 +650,6 @@
 							{
 								"key": "Accept",
 								"value": "application/json"
-							},
-							{
-								"key": "Cookie",
-								"value": "token=abc123"
 							}
 						],
 						"body": {
@@ -725,12 +721,12 @@
 							"basic": [
 								{
 									"key": "password",
-									"value": "password123",
+									"value": "{{rb_password}}",
 									"type": "string"
 								},
 								{
 									"key": "username",
-									"value": "admin",
+									"value": "{{rb_username}}",
 									"type": "string"
 								}
 							]
@@ -744,10 +740,6 @@
 							{
 								"key": "Accept",
 								"value": "application/json"
-							},
-							{
-								"key": "Cookie",
-								"value": "token=abc123"
 							}
 						],
 						"body": {
@@ -829,12 +821,12 @@
 							"basic": [
 								{
 									"key": "password",
-									"value": "password123",
+									"value": "{{rb_password}}",
 									"type": "string"
 								},
 								{
 									"key": "username",
-									"value": "admin",
+									"value": "{{rb_username}}",
 									"type": "string"
 								}
 							]
@@ -848,10 +840,6 @@
 							{
 								"key": "Accept",
 								"value": "application/json"
-							},
-							{
-								"key": "Cookie",
-								"value": "token=abc123"
 							}
 						],
 						"body": {
@@ -939,7 +927,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\" : \"admin\",\n    \"password\" : \"password123\"\n}"
+					"raw": "{\n    \"username\" : \"{{rb_username}}\",\n    \"password\" : \"{{rb_password}}\"\n}"
 				},
 				"url": {
 					"raw": "{{rb_url}}/auth",
@@ -964,7 +952,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\" : \"admin\",\n    \"password\" : \"password123\"\n}"
+							"raw": "{\n    \"username\" : \"{{rb_username}}\",\n    \"password\" : \"{{rb_password}}\"\n}"
 						},
 						"url": {
 							"raw": "{{rb_url}}/auth",
@@ -995,7 +983,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\" : \"admin\",\n    \"password\" : \"password123\"\n}"
+							"raw": "{\n    \"username\" : \"{{rb_username}}\",\n    \"password\" : \"{{rb_password}}\"\n}"
 						},
 						"url": {
 							"raw": "{{rb_url}}/auth",
@@ -1171,12 +1159,12 @@
 							"basic": [
 								{
 									"key": "password",
-									"value": "password123",
+									"value": "{{rb_password}}",
 									"type": "string"
 								},
 								{
 									"key": "username",
-									"value": "admin",
+									"value": "{{rb_username}}",
 									"type": "string"
 								}
 							]
@@ -1190,10 +1178,6 @@
 							{
 								"key": "Accept",
 								"value": "application/json"
-							},
-							{
-								"key": "Cookie",
-								"value": "token=abc123"
 							}
 						],
 						"body": {
@@ -1265,12 +1249,12 @@
 							"basic": [
 								{
 									"key": "password",
-									"value": "password123",
+									"value": "{{rb_password}}",
 									"type": "string"
 								},
 								{
 									"key": "username",
-									"value": "admin",
+									"value": "{{rb_username}}",
 									"type": "string"
 								}
 							]
@@ -1284,10 +1268,6 @@
 							{
 								"key": "Accept",
 								"value": "application/json"
-							},
-							{
-								"key": "Cookie",
-								"value": "token=abc123"
 							}
 						],
 						"body": {
@@ -1360,12 +1340,12 @@
 							"basic": [
 								{
 									"key": "password",
-									"value": "password123",
+									"value": "{{rb_password}}",
 									"type": "string"
 								},
 								{
 									"key": "username",
-									"value": "admin",
+									"value": "{{rb_username}}",
 									"type": "string"
 								}
 							]
@@ -1375,10 +1355,6 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json"
-							},
-							{
-								"key": "Cookie",
-								"value": "token=abc123"
 							}
 						],
 						"url": {
@@ -1427,10 +1403,10 @@
 					"",
 					"// the moment module helps with date manipulation and formatting",
 					"const moment = require(\"moment\");",
-					"var checkin = moment().add(\"days\", _.random(1, 180));",
+					"var checkin = moment().add(_.random(1, 180), \"days\");",
 					"pm.variables.set(\"checkin\", checkin.format(\"YYYY-MM-DD\"));",
 					"",
-					"var checkout = checkin.add(\"days\", _.random(1, 14));",
+					"var checkout = checkin.add(_.random(1, 14), \"days\");",
 					"pm.variables.set(\"checkout\", checkout.format(\"YYYY-MM-DD\"));",
 					"",
 					"var needs = [\"breakfast\", \"lunch\", \"early checkin\", \"late checkout\", null];",

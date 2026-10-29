@@ -16,6 +16,8 @@ A Postman collection for the [Restful Booker](https://restful-booker.herokuapp.c
 
 The collection's pre-request script generates random booking data (names, prices, dates) for each run. Tests that need a booking create their own first.
 
+The base URL and login (`rb_url`, `rb_username`, `rb_password`) live in `Production.postman_environment.json`, not in the requests. The login is Restful Booker's public demo account.
+
 ## Known defects
 
 The `Known Defects` folder holds tests that assert correct behaviour but fail against Restful Booker today. Restful Booker is a practice API with deliberate bugs:
