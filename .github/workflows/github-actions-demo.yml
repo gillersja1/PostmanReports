@@ -47,6 +47,24 @@ jobs:
           --reporter-junit-export reports/known-defects-junit.xml
           --reporter-htmlextra-export reports/known-defects-report.html
 
+      - name: Send test results to Grafana
+        if: always()
+        uses: gillersja1/test-results-otel@v1
+        with:
+          results: reports/junit.xml
+          suite: api
+          otlp-endpoint: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          otlp-headers: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+
+      - name: Send known-defect results to Grafana
+        if: always()
+        uses: gillersja1/test-results-otel@v1
+        with:
+          results: reports/known-defects-junit.xml
+          suite: known-defects
+          otlp-endpoint: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          otlp-headers: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+
       - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v4
