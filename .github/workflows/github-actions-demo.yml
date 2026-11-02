@@ -3,6 +3,9 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+  schedule:
+    # Weekly (Thursday 06:37 UTC): the APIs under test can change without a commit here. Public repo, so free minutes.
+    - cron: '37 6 * * 4'
 
 permissions:
   contents: read
